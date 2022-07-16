@@ -31,14 +31,19 @@ public class RoomGenerator : MonoBehaviour
         roomsContainer = new GameObject("Rooms").transform;
     }
 
-    void Start()
+    IEnumerator Start()
     {
         StartCoroutine(GenerateRooms(roomPrefab1x1));
+        while (generatingRooms)
+            yield return new WaitForSeconds(0.05f);
+
+        GenerateDoors();
     }
 
     //singular path, singular direction generation
     private IEnumerator GenerateRooms(Room prefab)
     {
+        generatingRooms = true;
         Room.Directions dir = Room.Directions.right;
         Vector2 offset = offsets[(int)dir] * prefabsDistance;
         Vector2 last = transform.position;
@@ -48,9 +53,22 @@ public class RoomGenerator : MonoBehaviour
             Vector2 newRoomPos = last + offset;
             last = newRoomPos;
 
-            Instantiate(prefab, newRoomPos, Quaternion.identity, roomsContainer);
-            yield return new WaitForSeconds(0.2f);
+            Room newRoom = Instantiate(prefab, newRoomPos, Quaternion.identity, roomsContainer);
+            rooms.Add(newRoom);
+            //yield return new WaitForSeconds(0.2f);
+            yield return null;
         }
+        generatingRooms = false;
         yield return null;
+    }
+
+    private void GenerateDoors()
+    {
+        generatorRoom.AssignAllNeighbours(offsets);
+
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            rooms[i].AssignAllNeighbours(offsets);
+        }
     }
 }

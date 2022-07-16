@@ -17,7 +17,7 @@ public class Room : MonoBehaviour
     public struct Doors
     {
         [HideInInspector]
-        public bool active;
+        public bool active; 
 
         public Directions direction;
         public SpriteRenderer spriteR;
@@ -35,10 +35,30 @@ public class Room : MonoBehaviour
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    public void AssignAllNeighbours(Vector2[] offsets)
     {
-        
+        for (int i = 0; i < roomDoors.Length; i++)
+        {
+            Vector2 offset = offsets[(int)roomDoors[i].direction];
+            RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, offset, RoomGenerator.prefabsDistance);
+            for (int j = 0; j < hit.Length; j++)
+            {
+                if (hit[j].collider != null && hit[j].collider.gameObject != this.gameObject)
+                {
+                    roomDoors[i].leadsTo = hit[j].collider.GetComponentInChildren<Room>();
+                    roomDoors[i].active = true;
+                    roomDoors[i].spriteR.enabled = true;
+                }
+            }
+        }
+    }
+
+    public int GetActiveDoorsAmount()
+    {
+        int output = 0;
+        foreach (Doors d in roomDoors)
+            if (d.active)
+                output++;
+        return output;
     }
 }

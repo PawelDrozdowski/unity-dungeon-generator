@@ -110,7 +110,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7782800183853012125, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_Name
-      value: Room Generator
+      value: Room Generator Variant
       objectReference: {fileID: 0}
     - target: {fileID: 9191700445571990906, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_IsActive
