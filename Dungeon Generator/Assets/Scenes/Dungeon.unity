@@ -176,7 +176,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -206,6 +206,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1482041294 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2512584713331561585, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+  m_PrefabInstance: {fileID: 1082080956822629493}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1082080956822629493
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -264,6 +269,14 @@ PrefabInstance:
     - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359053189259177264, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: roomDoors.Array.data[4].spriteR
+      value: 
+      objectReference: {fileID: 1482041294}
+    - target: {fileID: 8359053189259177264, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: roomDoors.Array.data[4].direction
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02574b5fdfed674448bd44e54637e154, type: 3}

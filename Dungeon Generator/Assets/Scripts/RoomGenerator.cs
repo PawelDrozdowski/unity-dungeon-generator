@@ -39,24 +39,36 @@ public class RoomGenerator : MonoBehaviour
 
         GenerateDoors();
     }
-
-    //singular path, singular direction generation
+    //singular path, multi direction generation
     private IEnumerator GenerateRooms(Room prefab)
     {
         generatingRooms = true;
-        Room.Directions dir = Room.Directions.right;
-        Vector2 offset = offsets[(int)dir] * prefabsDistance;
+        Room.Directions dir;
+        Vector2 offset;
         Vector2 last = transform.position;
 
         for (int i = 0; i < amountToGenerate; i++)
         {
+            dir = (Room.Directions)Random.Range(0, 4);
+            offset = offsets[(int)dir];
             Vector2 newRoomPos = last + offset;
-            last = newRoomPos;
 
             Room newRoom = Instantiate(prefab, newRoomPos, Quaternion.identity, roomsContainer);
+            newRoom.gameObject.name = "Room " + rooms.Count;
+
+            //yield return new WaitForFixedUpdate();//best performance
+            yield return new WaitForSeconds(0.2f);//animated look
+
+            last = newRoomPos;
+            if (newRoom.collision)
+            {
+                newRoom.gameObject.SetActive(false);
+                Destroy(newRoom.gameObject);
+                i--;
+                continue;
+            }
             rooms.Add(newRoom);
-            //yield return new WaitForSeconds(0.2f);
-            yield return null;
+            //Debug.Log($"Generated: {dir}");
         }
         generatingRooms = false;
         yield return null;

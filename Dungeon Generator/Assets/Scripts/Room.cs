@@ -31,10 +31,21 @@ public class Room : MonoBehaviour
     public SpriteRenderer centerDec;
 
     public Doors[] roomDoors = new Doors[4];
+
+    [HideInInspector]
+    public bool collision;
     void Start()
     {
-        
+        if (!GetComponent<RoomGenerator>())
+            body.color = new Color(Random.Range(.2f, .8f), Random.Range(.2f, .8f), Random.Range(.2f, .8f));
     }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        collision = true;
+        //Debug.Log("hit");
+    }
+
     public void AssignAllNeighbours(Vector2[] offsets)
     {
         for (int i = 0; i < roomDoors.Length; i++)

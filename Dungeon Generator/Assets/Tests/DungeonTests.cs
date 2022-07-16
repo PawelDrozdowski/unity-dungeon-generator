@@ -31,7 +31,7 @@ namespace Tests
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
             while (generator.generatingRooms)
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.15f);
 
             bool foundBrokenRoom = false;
             List<Room> generatedRooms = generator.rooms;
@@ -40,6 +40,8 @@ namespace Tests
                 if (generatedRooms[i].GetActiveDoorsAmount() == 0)
                 {
                     foundBrokenRoom = true;
+                    Debug.Log(generatedRooms[i].name);
+                    yield return new WaitForSeconds(3);
                     break;
                 }
             }
