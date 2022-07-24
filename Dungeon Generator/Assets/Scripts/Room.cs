@@ -63,6 +63,52 @@ public class Room : MonoBehaviour
             }
         }
     }
+    public void MarkAsBossRoom()
+    {
+        centerDec.color = Color.red;
+        centerDec.transform.localScale *= 1.2f;
+    }
+    public void MarkAsPathToBossRoom()
+    {
+        centerDec.color = Color.yellow;
+    }
+
+    public List<Room> GetShortestPathTo(in Room target, List<Room> steps = null, List<Room> shortest = null)
+    {
+        bool CanChangeShortest(in List<Room> _steps, in List<Room> _shortest)
+        {
+            return _shortest == null || _shortest.Count > _steps.Count;
+        }
+
+        if (steps == null)
+            steps = new List<Room>();
+        steps.Add(this);
+        if (shortest != null && steps.Count > shortest.Count)
+            return null;
+
+        //check if the target is the neighbour
+        for (int i = 0; i < roomDoors.Length; i++)
+            if (roomDoors[i].leadsTo == target)
+            {
+                if (CanChangeShortest(steps, shortest))
+                    shortest = new List<Room>(steps);
+            }
+
+        //tell neighbours to look for the target
+        for (int j = 0; j < roomDoors.Length; j++)
+        {
+            Doors d = roomDoors[j];
+            if (d.active && !steps.Contains(d.leadsTo))
+            {
+                //check if the shortest from a neighbour (+ path to it) is shorter than current shortest
+                List<Room> result = d.leadsTo.GetShortestPathTo(target, new List<Room>(steps), shortest);
+                if (result != null)
+                    if (CanChangeShortest(result, shortest))
+                        shortest = result;
+            }
+        }
+        return shortest;
+    }
 
     public int GetActiveDoorsAmount()
     {

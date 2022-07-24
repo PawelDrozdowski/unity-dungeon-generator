@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Room))]
@@ -42,6 +42,11 @@ public class RoomGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
 
         GenerateDoors();
+
+        Room furthest = FindFurthestRoom();
+        if(furthest != null)
+            furthest.MarkAsBossRoom();
+        SetPathToRoom(furthest);
     }
     //singular path, multi direction generation
     private IEnumerator GenerateRooms(Room prefab)
@@ -60,8 +65,8 @@ public class RoomGenerator : MonoBehaviour
             Room newRoom = Instantiate(prefab, newRoomPos, Quaternion.identity, roomsContainer);
             newRoom.gameObject.name = "Room " + rooms.Count;
 
-            //yield return new WaitForFixedUpdate();//best performance
-            yield return new WaitForSeconds(0.2f);//animated look
+            yield return new WaitForFixedUpdate();//best performance
+            //yield return new WaitForSeconds(0.2f);//animated look
 
             last = newRoomPos;
             if (newRoom.collision)
@@ -87,4 +92,73 @@ public class RoomGenerator : MonoBehaviour
             rooms[i].AssignAllNeighbours(offsets);
         }
     }
+    private Room FindFurthestRoom()
+    {
+        List<Room> checkedRooms = new List<Room>();
+
+        int index = -1;
+        int biggestDist = 0;
+        for (int i = rooms.Count - 1; i >= 0; i--)
+        {
+            if (checkedRooms.Contains(rooms[i]))
+                continue;
+
+            //check how many rooms have to be visited before reaching target
+            List<Room> path = rooms[i].GetShortestPathTo(generatorRoom);
+            if (path == null)
+            {
+                Debug.LogError($"Paths error - {rooms[i].name}can't lead to generator");
+                break;
+            }
+            int dist = path.Count;
+            if (dist > biggestDist)
+            {
+                index = i;
+                biggestDist = dist;
+            }
+
+            //mark visited rooms as checked
+            for (int j = 0; j < path.Count; j++)
+                if (!checkedRooms.Contains(path[j]))
+                    checkedRooms.Add(path[j]);
+
+            //Debug.Log(checkedRooms.Count);
+        }
+        if (index != -1)
+            return rooms[index];
+        else
+            return null;
+    }
+
+    private void SetPathToRoom(Room r)
+    {
+        if (r)
+        {
+            List<Room> steps = r.GetShortestPathTo(generatorRoom);
+            //Debug.Log($"Steps: {steps.Count}\n{string.Join<Room>("\n", steps.ToArray())}");
+            for (int i = 1; i < steps.Count; i++)
+                steps[i].MarkAsPathToBossRoom();
+        }
+        else
+            Debug.LogError("FindFurthestRoom() returned null - cannot set path.");
+    }
+    //based on physical distance
+    //private Room FindFurthestRoom()
+    //{
+    //    int index = -1;
+    //    float biggestDist = 0;
+    //    for (int i = 0; i < rooms.Count; i++)
+    //    {
+    //        float dist = (transform.position - rooms[i].transform.position).sqrMagnitude;
+    //        if (dist > biggestDist)
+    //        {
+    //            index = i;
+    //            biggestDist = dist;
+    //        }
+    //    }
+    //    if (index != -1)
+    //        return rooms[index];
+    //    else
+    //        return null;
+    //}
 }
