@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -12,6 +12,8 @@ namespace Tests
         [UnityTest]
         public IEnumerator T01_Generator_Active()
         {
+            ////uncomment if you fail any test - work on the same seed for easier debugging
+            //RoomGenerator.useSeed = true;
             SceneManager.LoadScene(0);
             yield return null;
 
@@ -32,6 +34,7 @@ namespace Tests
 
             while (generator.generatingRooms)
                 yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSeconds(0.05f);
 
             bool foundBrokenRoom = false;
             List<Room> generatedRooms = generator.rooms;

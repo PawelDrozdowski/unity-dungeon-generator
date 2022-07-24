@@ -1,9 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Room))]
 public class RoomGenerator : MonoBehaviour
 {
+    public static bool useSeed = false;
+    public static readonly int seed = 40;
     [SerializeField]
     int amountToGenerate = 32;
 
@@ -26,6 +28,8 @@ public class RoomGenerator : MonoBehaviour
 
     private void Awake()
     {
+        if (useSeed)
+            Random.InitState(seed);
         rooms = new List<Room>();
         generatorRoom = GetComponent<Room>();
         roomsContainer = new GameObject("Rooms").transform;
