@@ -4,12 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(Room))]
 public class RoomGenerator : MonoBehaviour
 {
-    public static bool useSeed = false;
-    public static readonly int seed = 40;
+    public static bool useSeed = true;
+    public static readonly int seed = 14;
     [SerializeField]
     int amountToGenerate = 32;
 
     public Room roomPrefab1x1;
+    public Room roomPrefab2x2;
+    [Tooltip("Add 2x2 room to the dungeon - isn't generated on start room.\nReduces total amount of rooms by 3!")]
+    public bool add2x2;
 
     public static readonly float prefabsDistance = 1;
     public readonly Vector2[] offsets = new Vector2[]
@@ -42,6 +45,9 @@ public class RoomGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
 
         GenerateDoors();
+
+        if(add2x2)
+            Add2x2Room();
 
         Room furthest = FindFurthestRoom();
         if(furthest != null)
@@ -92,6 +98,68 @@ public class RoomGenerator : MonoBehaviour
             rooms[i].AssignAllNeighbours(offsets);
         }
     }
+
+    private Room[] FindPlaceFor2x2()
+    {
+        Room start = null;
+        Room right = null;
+        Room down = null;
+        Room downRight = null;
+
+        //search for a correct place on grid (can't place on generator, must find 4 rooms to replace)
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            right = rooms[i].roomDoors[(int)Room.Directions.right].leadsTo;
+            down = rooms[i].roomDoors[(int)Room.Directions.down].leadsTo;
+
+            if (right == null || down == null)
+                continue;
+            if (right == generatorRoom || down == generatorRoom)
+                continue;
+
+            downRight = down.roomDoors[(int)Room.Directions.right].leadsTo;
+
+            if (downRight != null && downRight != generatorRoom)
+            {
+                start = rooms[i];
+                break;
+            }
+        }
+        return new Room[] { start, right, down, downRight };
+    }
+
+    private void Add2x2Room()
+    {
+        Room[] toRemove = FindPlaceFor2x2();
+        Room start = toRemove[0];
+
+        if (start != null)
+        {
+            Room newRoom = Instantiate(roomPrefab2x2, start.transform.position, Quaternion.identity, roomsContainer)
+                .GetComponent<Room>();
+
+            //make space for a new room
+            foreach (Room r in toRemove)
+            {
+                if (r != null)
+                {
+                    rooms.Remove(r);
+                    r.gameObject.SetActive(false);
+                    Destroy(r.gameObject);
+                }
+            }
+
+            rooms.Add(newRoom);
+            newRoom.GetComponent<BoxCollider2D>().enabled = true;
+            newRoom.AssignAllNeighbours(offsets);
+
+            //fix doors at neighbours
+            foreach (Room.Doors d in newRoom.roomDoors)
+                if (d.leadsTo != null)
+                    d.leadsTo.AssignAllNeighbours(offsets);
+        }
+    }
+
     private Room FindFurthestRoom()
     {
         List<Room> checkedRooms = new List<Room>();

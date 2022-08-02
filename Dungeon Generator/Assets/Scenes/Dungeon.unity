@@ -219,6 +219,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: add2x2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: roomPrefab2x2
+      value: 
+      objectReference: {fileID: 8152484570815157310, guid: 616f8ba0a54293840af65446819277a5, type: 3}
+    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: amountToGenerate
       value: 12
       objectReference: {fileID: 0}

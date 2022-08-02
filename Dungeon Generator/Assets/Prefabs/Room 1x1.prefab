@@ -383,21 +383,26 @@ MonoBehaviour:
   centerDec: {fileID: 3291678014671013612}
   roomDoors:
   - active: 0
+    roomPart: {fileID: 6961475936298938692}
     direction: 0
     spriteR: {fileID: 2381390968373145538}
     leadsTo: {fileID: 0}
   - active: 0
+    roomPart: {fileID: 6961475936298938692}
     direction: 1
     spriteR: {fileID: 4393784223316391020}
     leadsTo: {fileID: 0}
   - active: 0
+    roomPart: {fileID: 6961475936298938692}
     direction: 2
     spriteR: {fileID: 2990938968587451818}
     leadsTo: {fileID: 0}
   - active: 0
+    roomPart: {fileID: 6961475936298938692}
     direction: 3
     spriteR: {fileID: 3304002314747484531}
     leadsTo: {fileID: 0}
+  collision: 0
 --- !u!61 &8918206660000811409
 BoxCollider2D:
   m_ObjectHideFlags: 0

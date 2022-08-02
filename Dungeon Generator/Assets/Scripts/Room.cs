@@ -17,8 +17,9 @@ public class Room : MonoBehaviour
     public struct Doors
     {
         [HideInInspector]
-        public bool active; 
+        public bool active;
 
+        public Transform roomPart;
         public Directions direction;
         public SpriteRenderer spriteR;
         public Room leadsTo;
@@ -51,7 +52,7 @@ public class Room : MonoBehaviour
         for (int i = 0; i < roomDoors.Length; i++)
         {
             Vector2 offset = offsets[(int)roomDoors[i].direction];
-            RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, offset, RoomGenerator.prefabsDistance);
+            RaycastHit2D[] hit = Physics2D.RaycastAll(roomDoors[i].roomPart.position, offset, RoomGenerator.prefabsDistance);
             for (int j = 0; j < hit.Length; j++)
             {
                 if (hit[j].collider != null && hit[j].collider.gameObject != this.gameObject)
