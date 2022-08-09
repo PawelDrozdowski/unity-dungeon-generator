@@ -37,13 +37,12 @@ namespace Tests
             yield return new WaitForSeconds(0.05f);
 
             bool foundBrokenRoom = false;
-            List<Room> generatedRooms = generator.rooms;
-            for (int i = 0; i < generatedRooms.Count; i++)
+            for (int i = 0; i < generator.rooms.Count; i++)
             {
-                if (generatedRooms[i].GetActiveDoorsAmount() == 0)
+                if (generator.rooms[i].GetActiveDoorsAmount() == 0)
                 {
                     foundBrokenRoom = true;
-                    Debug.Log(generatedRooms[i].name);
+                    Debug.Log(generator.rooms[i].name);
                     yield return new WaitForSeconds(3);
                     break;
                 }
@@ -139,7 +138,23 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator T06_Same_Seed_Dungeons_Are_Equal()
+        public IEnumerator T06_Correct_Furthest_Room_Distance()
+        {
+            RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
+
+            while (generator.generatingRooms)
+                yield return new WaitForSeconds(0.05f);
+
+            Room generatorRoom = generator.generatorRoom;
+            Room furthest = PathManager.FindFurthestRoom(generator.rooms);
+            int pathLength = furthest.GetShortestPathTo(generatorRoom).Count;
+
+
+            Assert.AreEqual(pathLength, furthest.jumpsFromStart);
+        }
+
+        [UnityTest]
+        public IEnumerator T07_Same_Seed_Dungeons_Are_Equal()
         {
             string dungeonToString(RoomGenerator _generator)
             {

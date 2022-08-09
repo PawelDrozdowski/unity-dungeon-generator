@@ -214,12 +214,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: density
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: ultraSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: findFurthest
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: amountToGenerate
-      value: 20
+      value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: fasterGeneration
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: simplifyFindFurthest

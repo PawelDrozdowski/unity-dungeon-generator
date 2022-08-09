@@ -40,11 +40,7 @@ public class Room : MonoBehaviour
     [HideInInspector]
     public bool collision;
 
-    void Start()
-    {
-        if (!GetComponent<RoomGenerator>())
-            body.color = new Color(Random.Range(.2f, .8f), Random.Range(.2f, .8f), Random.Range(.2f, .8f));
-    }
+    public int jumpsFromStart = - 1;
 
     private void OnTriggerEnter2D(Collider2D col)
     {
@@ -71,6 +67,12 @@ public class Room : MonoBehaviour
             }
         }
     }
+
+    public void SetRandomBodyColor()
+    {
+        body.color = new Color(Random.Range(.2f, .8f), Random.Range(.2f, .8f), Random.Range(.2f, .8f));
+    }
+
     public void MarkAsBossRoom()
     {
         centerDec.color = Color.red;
@@ -78,7 +80,8 @@ public class Room : MonoBehaviour
     }
     public void MarkAsPathToBossRoom()
     {
-        centerDec.color = Color.yellow;
+        centerDec.color = Color.red;
+        body.color = Color.grey;
     }
 
     public List<Room> GetShortestPathTo(in Room target, List<Room> steps = null, List<Room> shortest = null)
@@ -94,27 +97,19 @@ public class Room : MonoBehaviour
         if (shortest != null && steps.Count > shortest.Count)
             return null;
 
-        //check if the target is the neighbour
-        for (int i = 0; i < roomDoors.Length; i++)
-            if (roomDoors[i].leadsTo == target)
-            {
-                if (CanChangeShortest(steps, shortest))
-                    shortest = new List<Room>(steps);
-            }
+        Room selected = GetClosestToStartNeighbour();
 
-        //tell neighbours to look for the target
-        for (int j = 0; j < roomDoors.Length; j++)
+        if (selected == target)
         {
-            Doors d = roomDoors[j];
-            if (d.active && !steps.Contains(d.leadsTo))
-            {
-                //check if the shortest from a neighbour (+ path to it) is shorter than current shortest
-                List<Room> result = d.leadsTo.GetShortestPathTo(target, new List<Room>(steps), shortest);
-                if (result != null)
-                    if (CanChangeShortest(result, shortest))
-                        shortest = result;
-            }
+            if (CanChangeShortest(steps, shortest))
+                shortest = new List<Room>(steps);
         }
+        //tell closest neighbour to look for the target
+        List<Room> result = selected.GetShortestPathTo(target, new List<Room>(steps), shortest);
+        if (result != null)
+            if (CanChangeShortest(result, shortest))
+                shortest = result;
+
         return shortest;
     }
 
@@ -125,5 +120,46 @@ public class Room : MonoBehaviour
             if (d.active)
                 output++;
         return output;
+    }
+
+    public List<Room> GetNeighbours()
+    {
+        List<Room> output = new List<Room>();
+        foreach (Doors d in roomDoors)
+            if (d.active)
+                output.Add(d.leadsTo);
+        return output;
+    }
+
+    public Room GetClosestToStartNeighbour()
+    {
+        //return this if called on start room
+        Room output = this;
+
+        foreach (Doors d in roomDoors)
+            if (d.active)
+                if (output.jumpsFromStart >= d.leadsTo.jumpsFromStart)
+                    output = d.leadsTo;
+        return output;
+    }
+    public Room GetFurthestFromStartNeighbour()
+    {
+        //return this if called on start room
+        Room output = this;
+
+        foreach (Doors d in roomDoors)
+            if (d.active)
+                if (output.jumpsFromStart < d.leadsTo.jumpsFromStart)
+                    output = d.leadsTo;
+        return output;
+    }
+
+    public bool IsColliding(float dist)
+    {
+        bool collision;
+        RaycastHit2D[] hit = Physics2D
+            .RaycastAll(transform.position, Vector2.one, dist);
+        collision = hit.Length > 1;
+        return collision;
     }
 }

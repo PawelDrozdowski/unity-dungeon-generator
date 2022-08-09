@@ -4,19 +4,35 @@ using UnityEngine;
 [RequireComponent(typeof(Room))]
 public class RoomGenerator : MonoBehaviour
 {
+    public enum GeneratorType
+    {
+        singularPath,
+        multiPath,
+        multiPathBalanced
+    }
+
     public static bool useSeed = false;
-    public static readonly int seed = 14;
+    public static readonly int seed = 26;
+
     [SerializeField]
     int amountToGenerate = 32;
+
+    [Range(0,2)]
+    public int density;
+    private GeneratorType type;
 
     public Room roomPrefab1x1;
     public Room hexRoomPrefab1x1;
     Room selected1x1Prefab;
 
     public Room roomPrefab2x2;
+
     [Tooltip("Add 2x2 room to the dungeon - isn't generated on start room.\nReduces total amount of rooms by 3!")]
     public bool add2x2;
     public bool hex;
+
+    public bool ultraSpeed;
+    float rayDistForCollisionCheck = prefabsDistance * 0.1f;
 
     public static readonly float prefabsDistance = 1;
     public readonly Vector2[] offsets = new Vector2[]
@@ -45,32 +61,40 @@ public class RoomGenerator : MonoBehaviour
     {
         if (useSeed)
             Random.InitState(seed);
+
+        type = (GeneratorType)density;
+
         rooms = new List<Room>();
+
         generatorRoom = GetComponent<Room>();
+        generatorRoom.jumpsFromStart = 0;
+
         roomsContainer = new GameObject("Rooms").transform;
         selected1x1Prefab = hex ? hexRoomPrefab1x1 : roomPrefab1x1;
     }
 
     IEnumerator Start()
     {
-        StartCoroutine(GenerateRooms(selected1x1Prefab));
+        if(type == GeneratorType.singularPath)
+            StartCoroutine(GenerateRooms(selected1x1Prefab));
+        else
+            StartCoroutine(GenerateRoomsMultiPath());
         while (generatingRooms)
             yield return new WaitForSeconds(0.05f);
+        yield return null;
 
         GenerateDoors();
 
         if (add2x2 && !hex)
             Add2x2Room();
 
+        PathManager.AssignJumps(generatorRoom);
 
-        Room furthest = FindFurthestRoom();
-        if (furthest != null)
-            furthest.MarkAsBossRoom();
-        SetPathToRoom(furthest);
-
+        FurthestRoomActions();
 
         yield return null;
     }
+
     //singular path, multi direction generation
     private IEnumerator GenerateRooms(Room prefab)
     {
@@ -81,21 +105,31 @@ public class RoomGenerator : MonoBehaviour
 
         for (int i = 0; i < amountToGenerate; i++)
         {
-            if(hex)
-                dir = (Room.Directions)Random.Range(2, 8);
-            else
-                dir = (Room.Directions)Random.Range(0, 4);
+            if (ultraSpeed && i % 50 == 0)
+                yield return null;
+
+            dir = RandomDirection();
+
             offset = offsets[(int)dir];
             Vector2 newRoomPos = last + offset;
 
             Room newRoom = Instantiate(prefab, newRoomPos, Quaternion.identity, roomsContainer);
             newRoom.gameObject.name = "Room " + rooms.Count;
+            newRoom.SetRandomBodyColor();
 
-            yield return new WaitForFixedUpdate();//best performance
-            //yield return new WaitForSeconds(0.2f);//animated look
+            bool collision;
+
+            if (ultraSpeed)
+                collision = newRoom.IsColliding(rayDistForCollisionCheck);
+            else
+            {
+                yield return new WaitForFixedUpdate();      //best performance
+                //yield return new WaitForSeconds(0.1f);    //animated look
+                collision = newRoom.collision;
+            }
 
             last = newRoomPos;
-            if (newRoom.collision)
+            if (collision)
             {
                 newRoom.gameObject.SetActive(false);
                 Destroy(newRoom.gameObject);
@@ -109,6 +143,77 @@ public class RoomGenerator : MonoBehaviour
         yield return null;
     }
 
+    //multi path, multi direction generation
+    private IEnumerator GenerateRoomsMultiPath()
+    {
+        Vector2[] lastPosition = new Vector2[PathManager.GENERATOR_PATHS_AMOUNT];
+
+        Room GenerateRoom(int orderInPath, int pathIndex)
+        {
+            Room.Directions dir = RandomDirection();
+
+            Vector2 offset = offsets[(int)dir];
+            Vector2 newRoomPos = lastPosition[pathIndex] + offset;
+            lastPosition[pathIndex] = newRoomPos;
+
+            Room newRoom = Instantiate(selected1x1Prefab, newRoomPos, Quaternion.identity, roomsContainer);
+            newRoom.gameObject.name = "Room " + rooms.Count;
+            newRoom.SetRandomBodyColor();
+            //Debug.Log($"Generated: {dir}");
+            return newRoom;
+        }
+
+        generatingRooms = true;
+        if (!roomsContainer)
+            roomsContainer = new GameObject("Rooms").transform;
+
+        //set random path sizes
+        int[] pathRooms = PathManager.PathRoomsAmount(amountToGenerate, type == GeneratorType.multiPathBalanced);
+        int pathCalls = Mathf.Max(pathRooms);
+        //Debug.Log(string.Join(", ", pathRooms));
+
+        //generate paths
+        for (int i = 1; i <= pathCalls; i++)
+        {
+            //partition ultra speed generation
+            if (ultraSpeed && i % 50 == 0)
+                yield return null;
+
+            //generate in cycles: one room per path
+            //1st iteration creates 1st room for each path (generator's neighbours)
+            for (int pathIndex = 0; pathIndex < PathManager.GENERATOR_PATHS_AMOUNT; pathIndex++)
+            {
+                //skip if no rooms for this path
+                if (i > pathRooms[pathIndex])
+                    continue;
+
+                Room newRoom = GenerateRoom(i, pathIndex);
+                bool collision;
+
+                if (ultraSpeed)
+                    collision = newRoom.IsColliding(rayDistForCollisionCheck);
+                else
+                {
+                    yield return new WaitForFixedUpdate();      //best performance
+                    //yield return new WaitForSeconds(0.1f);    //animated look
+                    collision = newRoom.collision;
+                }
+                    
+
+                if (collision)
+                {
+                    newRoom.gameObject.SetActive(false);
+                    Destroy(newRoom.gameObject);
+                    pathIndex--;
+                    continue;
+                }
+                rooms.Add(newRoom);
+            }
+        }
+        yield return null;
+        generatingRooms = false;
+    }
+
     private void GenerateDoors()
     {
         generatorRoom.AssignAllNeighbours(offsets);
@@ -119,38 +224,9 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    private Room[] FindPlaceFor2x2()
-    {
-        Room start = null;
-        Room right = null;
-        Room down = null;
-        Room downRight = null;
-
-        //search for a correct place on grid (can't place on generator, must find 4 rooms to replace)
-        for (int i = 0; i < rooms.Count; i++)
-        {
-            right = rooms[i].roomDoors[(int)Room.Directions.right].leadsTo;
-            down = rooms[i].roomDoors[(int)Room.Directions.down].leadsTo;
-
-            if (right == null || down == null)
-                continue;
-            if (right == generatorRoom || down == generatorRoom)
-                continue;
-
-            downRight = down.roomDoors[(int)Room.Directions.right].leadsTo;
-
-            if (downRight != null && downRight != generatorRoom)
-            {
-                start = rooms[i];
-                break;
-            }
-        }
-        return new Room[] { start, right, down, downRight };
-    }
-
     private void Add2x2Room()
     {
-        Room[] toRemove = FindPlaceFor2x2();
+        Room[] toRemove = PathManager.FindPlaceFor2x2(rooms, generatorRoom);
         Room start = toRemove[0];
 
         if (start != null)
@@ -180,56 +256,26 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    private Room FindFurthestRoom()
+    private void FurthestRoomActions()
     {
-        List<Room> checkedRooms = new List<Room>();
-
-        int index = -1;
-        int biggestDist = 0;
-        for (int i = rooms.Count - 1; i >= 0; i--)
+        Room furthest = PathManager.FindFurthestRoom(rooms);
+        if (furthest != null)
         {
-            if (checkedRooms.Contains(rooms[i]))
-                continue;
-
-            //check how many rooms have to be visited before reaching target
-            List<Room> path = rooms[i].GetShortestPathTo(generatorRoom);
-            if (path == null)
-            {
-                Debug.LogError($"Paths error - {rooms[i].name}can't lead to generator");
-                break;
-            }
-            int dist = path.Count;
-            if (dist > biggestDist)
-            {
-                index = i;
-                biggestDist = dist;
-            }
-
-            //mark visited rooms as checked
-            for (int j = 0; j < path.Count; j++)
-                if (!checkedRooms.Contains(path[j]))
-                    checkedRooms.Add(path[j]);
-
-            //Debug.Log(checkedRooms.Count);
-        }
-        if (index != -1)
-            return rooms[index];
-        else
-            return null;
-    }
-
-    private void SetPathToRoom(Room r)
-    {
-        if (r)
-        {
-            List<Room> steps = r.GetShortestPathTo(generatorRoom);
-            //Debug.Log($"Steps: {steps.Count}\n{string.Join<Room>("\n", steps.ToArray())}");
-            for (int i = 1; i < steps.Count; i++)
-                steps[i].MarkAsPathToBossRoom();
+            furthest.MarkAsBossRoom();
+            PathManager.SetPathToRoom(furthest,generatorRoom);
         }
         else
             Debug.LogError("FindFurthestRoom() returned null - cannot set path.");
     }
+
+    private Room.Directions RandomDirection()
+    {
+        if (hex)
+            return (Room.Directions)Random.Range(2, 8);
+        else
+            return (Room.Directions)Random.Range(0, 4);
+    }
+
     //based on physical distance
     //private Room FindFurthestRoom()
     //{
