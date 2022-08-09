@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amountToGenerate: 32
   roomPrefab1x1: {fileID: 8864491939727171634, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
+  hexRoomPrefab1x1: {fileID: 0}
+  roomPrefab2x2: {fileID: 8152484570815157310, guid: 616f8ba0a54293840af65446819277a5, type: 3}
+  add2x2: 0
+  hex: 0
+  findFurthest: 1
   rooms: []
   generatingRooms: 0
   generatorRoom: {fileID: 0}

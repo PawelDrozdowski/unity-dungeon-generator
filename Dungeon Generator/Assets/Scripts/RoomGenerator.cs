@@ -1,26 +1,38 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Room))]
 public class RoomGenerator : MonoBehaviour
 {
-    public static bool useSeed = true;
+    public static bool useSeed = false;
     public static readonly int seed = 14;
     [SerializeField]
     int amountToGenerate = 32;
 
     public Room roomPrefab1x1;
+    public Room hexRoomPrefab1x1;
+    Room selected1x1Prefab;
+
     public Room roomPrefab2x2;
     [Tooltip("Add 2x2 room to the dungeon - isn't generated on start room.\nReduces total amount of rooms by 3!")]
     public bool add2x2;
+    public bool hex;
 
     public static readonly float prefabsDistance = 1;
     public readonly Vector2[] offsets = new Vector2[]
     {
-        Vector2.up * prefabsDistance,
         Vector2.right * prefabsDistance,
-        Vector2.down * prefabsDistance,
         Vector2.left * prefabsDistance,
+        Vector2.up * prefabsDistance,
+        Vector2.down * prefabsDistance,
+        //hex_right_up,
+        new Vector2(0.653f,0.377f).normalized * prefabsDistance,
+        //hex_right_down,
+        new Vector2(0.653f,-0.377f).normalized * prefabsDistance,
+        //hex_left_down,
+        new Vector2(-0.653f,-0.377f).normalized * prefabsDistance,
+        //hex_left_up
+        new Vector2(-0.653f,0.377f).normalized * prefabsDistance
     };
 
     public List<Room> rooms;
@@ -36,23 +48,28 @@ public class RoomGenerator : MonoBehaviour
         rooms = new List<Room>();
         generatorRoom = GetComponent<Room>();
         roomsContainer = new GameObject("Rooms").transform;
+        selected1x1Prefab = hex ? hexRoomPrefab1x1 : roomPrefab1x1;
     }
 
     IEnumerator Start()
     {
-        StartCoroutine(GenerateRooms(roomPrefab1x1));
+        StartCoroutine(GenerateRooms(selected1x1Prefab));
         while (generatingRooms)
             yield return new WaitForSeconds(0.05f);
 
         GenerateDoors();
 
-        if(add2x2)
+        if (add2x2 && !hex)
             Add2x2Room();
 
+
         Room furthest = FindFurthestRoom();
-        if(furthest != null)
+        if (furthest != null)
             furthest.MarkAsBossRoom();
         SetPathToRoom(furthest);
+
+
+        yield return null;
     }
     //singular path, multi direction generation
     private IEnumerator GenerateRooms(Room prefab)
@@ -64,7 +81,10 @@ public class RoomGenerator : MonoBehaviour
 
         for (int i = 0; i < amountToGenerate; i++)
         {
-            dir = (Room.Directions)Random.Range(0, 4);
+            if(hex)
+                dir = (Room.Directions)Random.Range(2, 8);
+            else
+                dir = (Room.Directions)Random.Range(0, 4);
             offset = offsets[(int)dir];
             Vector2 newRoomPos = last + offset;
 

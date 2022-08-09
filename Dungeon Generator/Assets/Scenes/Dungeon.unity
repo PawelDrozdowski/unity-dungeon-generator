@@ -206,85 +206,72 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1482041294 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2512584713331561585, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-  m_PrefabInstance: {fileID: 1082080956822629493}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1082080956822629493
+--- !u!1001 &2128424041
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-      propertyPath: add2x2
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: findFurthest
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-      propertyPath: roomPrefab2x2
-      value: 
-      objectReference: {fileID: 8152484570815157310, guid: 616f8ba0a54293840af65446819277a5, type: 3}
-    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: amountToGenerate
-      value: 12
+      value: 20
       objectReference: {fileID: 0}
-    - target: {fileID: 7135493385129073055, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-      propertyPath: m_Name
-      value: Room Generator
+    - target: {fileID: 8492015552934550673, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: simplifyFindFurthest
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+    - target: {fileID: 8617307226169036373, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8359053189259177264, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-      propertyPath: roomDoors.Array.data[4].spriteR
-      value: 
-      objectReference: {fileID: 1482041294}
-    - target: {fileID: 8359053189259177264, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
-      propertyPath: roomDoors.Array.data[4].direction
-      value: 3
+    - target: {fileID: 8865614829769337740, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
+      propertyPath: m_Name
+      value: Hex Room Generator 1x1 Variant Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}

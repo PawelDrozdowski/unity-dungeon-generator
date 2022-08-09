@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
@@ -7,10 +7,14 @@ public class Room : MonoBehaviour
 {
     public enum Directions
     {
-        up,
         right,
+        left,
+        up,
         down,
-        left
+        hexRightUp,
+        hexRightDown,
+        hexLeftDown,
+        hexLeftUp
     }
 
     [System.Serializable]
@@ -35,6 +39,7 @@ public class Room : MonoBehaviour
 
     [HideInInspector]
     public bool collision;
+
     void Start()
     {
         if (!GetComponent<RoomGenerator>())
@@ -51,7 +56,9 @@ public class Room : MonoBehaviour
     {
         for (int i = 0; i < roomDoors.Length; i++)
         {
-            Vector2 offset = offsets[(int)roomDoors[i].direction];
+            int dir = (int)roomDoors[i].direction;
+            Vector2 offset = offsets[dir];
+
             RaycastHit2D[] hit = Physics2D.RaycastAll(roomDoors[i].roomPart.position, offset, RoomGenerator.prefabsDistance);
             for (int j = 0; j < hit.Length; j++)
             {
