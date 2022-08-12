@@ -42,6 +42,12 @@ public class Room : MonoBehaviour
 
     public int jumpsFromStart = - 1;
 
+    private void Awake()
+    {
+        GetComponent<BoxCollider2D>().isTrigger = true;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+    }
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         collision = true;
