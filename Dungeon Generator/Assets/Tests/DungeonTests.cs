@@ -32,7 +32,7 @@ namespace Tests
 
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.15f);
             yield return new WaitForSeconds(0.05f);
 
@@ -55,7 +55,7 @@ namespace Tests
         {
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
             bool foundBrokenDoor = false;
@@ -78,7 +78,7 @@ namespace Tests
         {
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
             bool foundBrokenConnection = false;
@@ -117,7 +117,7 @@ namespace Tests
         {
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
             bool foundUnreachableRoom = false;
@@ -142,7 +142,7 @@ namespace Tests
         {
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
             Room generatorRoom = generator.generatorRoom;
@@ -177,8 +177,9 @@ namespace Tests
 
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
+            yield return null;
             generation1 = dungeonToString(generator);
 
             SceneManager.LoadScene(0);
@@ -186,7 +187,7 @@ namespace Tests
 
             generator = Object.FindObjectOfType<RoomGenerator>();
 
-            while (generator.generatingRooms)
+            while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
             generation2 = dungeonToString(generator);

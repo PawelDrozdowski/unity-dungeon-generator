@@ -17,6 +17,11 @@ public class PathManager : MonoBehaviour
                 AssignJumps(n);
         }
     }
+    public static void AssignJumps(List<Room> elements)
+    {
+        foreach (var e in elements)
+            e.jumpsFromStart = GetJumps(e.GetNeighbours());
+    }
 
     private static int GetJumps(List<Room> neighbours)
     {
@@ -27,7 +32,41 @@ public class PathManager : MonoBehaviour
         return minJumps + 1;
     }
 
-    public static int[] PathRoomsAmount(int amountToGenerate, bool equal = false)
+    public static List<Room> SortForPathFinding(Room element, int structureElements)
+    {
+        List<Room> t1 = new List<Room>();
+        List<Room> t2 = new List<Room>();
+        List<Room> output = new List<Room>();
+        bool sourceIsT1 = true;
+        bool firstIteration = true;
+
+        t1.Add(element);
+        output.Add(element);
+        while (output.Count < structureElements)
+        {
+            List<Room> source = sourceIsT1 ? t1 : t2;
+            List<Room> target = sourceIsT1 ? t2 : t1;
+            target.Clear();
+            foreach (Room r in source)
+            {
+                List<Room> rooms = r.GetNeighbours();
+                foreach (Room x in rooms)
+                    if (!target.Contains(x) && !output.Contains(x))
+                        target.Add(x);
+            }
+            foreach (Room r in target)
+                output.Add(r);
+            if (firstIteration)
+            {
+                t1.Clear();
+                firstIteration = false;
+            }
+            sourceIsT1 = !sourceIsT1;
+        }
+        return output;
+    }
+
+    public static int[] GeneratorPathRoomsAmount(int amountToGenerate, bool equal = false)
     {
 
         int[] output = new int[GENERATOR_PATHS_AMOUNT];

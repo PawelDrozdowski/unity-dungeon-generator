@@ -54,7 +54,12 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> rooms;
 
     private Transform roomsContainer;
+
+    [HideInInspector]
     public bool generatingRooms;
+    [HideInInspector]
+    public bool generatingStructure = true;
+    [HideInInspector]
     public Room generatorRoom;
 
     private void Awake()
@@ -87,12 +92,11 @@ public class RoomGenerator : MonoBehaviour
 
         if (add2x2 && !hex)
             Add2x2Room();
-
-        PathManager.AssignJumps(generatorRoom);
+        List<Room> roomsSortedByDist = PathManager.SortForPathFinding(generatorRoom, amountToGenerate + 1);
+        PathManager.AssignJumps(roomsSortedByDist);
 
         FurthestRoomActions();
-
-        yield return null;
+        generatingStructure = false;
     }
 
     //singular path, multi direction generation
@@ -168,7 +172,7 @@ public class RoomGenerator : MonoBehaviour
             roomsContainer = new GameObject("Rooms").transform;
 
         //set random path sizes
-        int[] pathRooms = PathManager.PathRoomsAmount(amountToGenerate, type == GeneratorType.multiPathBalanced);
+        int[] pathRooms = PathManager.GeneratorPathRoomsAmount(amountToGenerate, type == GeneratorType.multiPathBalanced);
         int pathCalls = Mathf.Max(pathRooms);
         //Debug.Log(string.Join(", ", pathRooms));
 

@@ -58,6 +58,8 @@ public class Room : MonoBehaviour
     {
         for (int i = 0; i < roomDoors.Length; i++)
         {
+            if (roomDoors[i].active) continue; //already set by a neighbour
+
             int dir = (int)roomDoors[i].direction;
             Vector2 offset = offsets[dir];
 
@@ -66,12 +68,22 @@ public class Room : MonoBehaviour
             {
                 if (hit[j].collider != null && hit[j].collider.gameObject != this.gameObject)
                 {
-                    roomDoors[i].leadsTo = hit[j].collider.GetComponentInChildren<Room>();
-                    roomDoors[i].active = true;
-                    roomDoors[i].spriteR.enabled = true;
+                    Room neighbour = hit[j].collider.GetComponentInChildren<Room>();
+                    OpenDoor(i, neighbour);
+
+                    int oppositeDirAsInt = (int)GetOppositeDirection((Directions)dir);
+                    int neighbourMatchingDoorIndex = GetIndexOfMatchingNeighbourDoor(oppositeDirAsInt,roomDoors.Length);
+                    neighbour.OpenDoor(neighbourMatchingDoorIndex, this);
                 }
             }
         }
+    }
+
+    private void OpenDoor(int i, Room neighbour)
+    {
+        roomDoors[i].leadsTo = neighbour;
+        roomDoors[i].active = true;
+        roomDoors[i].spriteR.enabled = true;
     }
 
     public void SetRandomBodyColor()
@@ -90,33 +102,24 @@ public class Room : MonoBehaviour
         body.color = Color.grey;
     }
 
-    public List<Room> GetShortestPathTo(in Room target, List<Room> steps = null, List<Room> shortest = null)
+    public List<Room> GetShortestPathTo(in Room target)
     {
-        bool CanChangeShortest(in List<Room> _steps, in List<Room> _shortest)
-        {
-            return _shortest == null || _shortest.Count > _steps.Count;
-        }
-
-        if (steps == null)
-            steps = new List<Room>();
+        List<Room> steps = new List<Room>();
         steps.Add(this);
-        if (shortest != null && steps.Count > shortest.Count)
-            return null;
 
-        Room selected = GetClosestToStartNeighbour();
-
-        if (selected == target)
+        Room next = GetClosestToStartNeighbour();
+        while (next != target)
         {
-            if (CanChangeShortest(steps, shortest))
-                shortest = new List<Room>(steps);
-        }
-        //tell closest neighbour to look for the target
-        List<Room> result = selected.GetShortestPathTo(target, new List<Room>(steps), shortest);
-        if (result != null)
-            if (CanChangeShortest(result, shortest))
-                shortest = result;
+            if (next.jumpsFromStart == 0 && next != target) {
+                Debug.LogError($"Bad pathfinding for: {next.gameObject.name}");
+                return steps;
+            }
 
-        return shortest;
+            steps.Add(next);
+            next = next.GetClosestToStartNeighbour();
+        }
+
+        return steps;
     }
 
     public int GetActiveDoorsAmount()
@@ -167,5 +170,49 @@ public class Room : MonoBehaviour
             .RaycastAll(transform.position, Vector2.one, dist);
         collision = hit.Length > 1;
         return collision;
+    }
+
+    public static Directions GetOppositeDirection(Directions d)
+    {
+        //a quick way of finding the opposite direction (useful in doors pairing)
+        //the is a simpler way of it if you don't want both hex and square rooms
+        Directions output;
+        switch (d)
+        {
+            case Directions.right:
+                output = Directions.left;
+                break;
+            case Directions.left:
+                output = Directions.right;
+                break;
+            case Directions.up:
+                output = Directions.down;
+                break;
+            case Directions.down:
+                output = Directions.up;
+                break;
+            case Directions.hexRightUp:
+                output = Directions.hexLeftDown;
+                break;
+            case Directions.hexRightDown:
+                output = Directions.hexLeftUp;
+                break;
+            case Directions.hexLeftDown:
+                output = Directions.hexRightUp;
+                break;
+            case Directions.hexLeftUp:
+                output = Directions.hexRightDown;
+                break;
+            default:
+                output = Directions.up;
+                break;
+        }
+        return output;     
+    }
+
+    public static int GetIndexOfMatchingNeighbourDoor(int directionAsInt, int doorsAmount)
+    {
+        //return directionAsInt if a square, otherwise reduce by 2 and then return
+        return doorsAmount > 4 ? directionAsInt - 2 : directionAsInt;
     }
 }
