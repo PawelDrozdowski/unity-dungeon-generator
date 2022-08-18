@@ -117,6 +117,9 @@ namespace Tests
         {
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
 
+            if (generator.pathfindingExample == false)
+                Assert.Fail("Pathfinding turned off!");
+
             while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
 
@@ -140,7 +143,11 @@ namespace Tests
         [UnityTest]
         public IEnumerator T06_Correct_Furthest_Room_Distance()
         {
+
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
+
+            if (generator.pathfindingExample == false)
+                Assert.Fail("Pathfinding turned off!");
 
             while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
@@ -176,6 +183,7 @@ namespace Tests
             yield return null;
 
             RoomGenerator generator = Object.FindObjectOfType<RoomGenerator>();
+            generator.pathfindingExample = false;
 
             while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);
@@ -186,6 +194,7 @@ namespace Tests
             yield return null;
 
             generator = Object.FindObjectOfType<RoomGenerator>();
+            generator.pathfindingExample = false;
 
             while (generator.generatingStructure)
                 yield return new WaitForSeconds(0.05f);

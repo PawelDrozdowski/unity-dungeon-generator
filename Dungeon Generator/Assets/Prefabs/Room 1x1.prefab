@@ -346,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6961475936298938692
 Transform:
   m_ObjectHideFlags: 0
@@ -403,6 +403,7 @@ MonoBehaviour:
     spriteR: {fileID: 2990938968587451818}
     leadsTo: {fileID: 0}
   collision: 0
+  jumpsFromStart: -1
 --- !u!61 &8918206660000811409
 BoxCollider2D:
   m_ObjectHideFlags: 0

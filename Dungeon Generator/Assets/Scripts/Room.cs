@@ -30,10 +30,12 @@ public class Room : MonoBehaviour
     }
 
     [SerializeField]
-    private SpriteRenderer body;
+    public SpriteRenderer body;
 
     [SerializeField]
     public SpriteRenderer centerDec;
+
+    private BoxCollider2D myCollider;
 
     public Doors[] roomDoors = new Doors[4];
 
@@ -44,8 +46,9 @@ public class Room : MonoBehaviour
 
     private void Awake()
     {
-        GetComponent<BoxCollider2D>().isTrigger = true;
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        myCollider = GetComponent<BoxCollider2D>();
+        myCollider.isTrigger = true;
+        //GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -58,7 +61,7 @@ public class Room : MonoBehaviour
     {
         for (int i = 0; i < roomDoors.Length; i++)
         {
-            if (roomDoors[i].active) continue; //already set by a neighbour
+            //if (roomDoors[i].active) continue; //already set by a neighbour
 
             int dir = (int)roomDoors[i].direction;
             Vector2 offset = offsets[dir];
@@ -70,10 +73,6 @@ public class Room : MonoBehaviour
                 {
                     Room neighbour = hit[j].collider.GetComponentInChildren<Room>();
                     OpenDoor(i, neighbour);
-
-                    int oppositeDirAsInt = (int)GetOppositeDirection((Directions)dir);
-                    int neighbourMatchingDoorIndex = GetIndexOfMatchingNeighbourDoor(oppositeDirAsInt,roomDoors.Length);
-                    neighbour.OpenDoor(neighbourMatchingDoorIndex, this);
                 }
             }
         }
@@ -163,13 +162,27 @@ public class Room : MonoBehaviour
         return output;
     }
 
-    public bool IsColliding(float dist)
+    public bool IsCollidingForPooled(List<int> chunk, List<Room> rooms, Vector2 generatorPosition)
     {
-        bool collision;
-        RaycastHit2D[] hit = Physics2D
-            .RaycastAll(transform.position, Vector2.one, dist);
-        collision = hit.Length > 1;
-        return collision;
+        bool roomsCollision = false;
+        Vector2 me = transform.position;
+        for (int i = chunk.Count-1; i >= 0; i--)
+        {
+            Vector2 target = rooms[chunk[i]].transform.position;
+            if (Mathf.Abs(target.y - me.y) > 0.01f
+                || Mathf.Abs(target.x - me.x) > 0.01f) continue;
+
+            if (rooms[chunk[i]] == this) continue;
+
+            //Debug.Log((transform.position - rooms[i].transform.position).sqrMagnitude);
+            if ((me - target).sqrMagnitude < 0.2f)
+            {
+                roomsCollision = true;
+                break;
+            }
+        }
+        bool generatorColission = (me - generatorPosition).sqrMagnitude < 0.01f;
+        return roomsCollision || generatorColission;
     }
 
     public static Directions GetOppositeDirection(Directions d)
@@ -215,4 +228,13 @@ public class Room : MonoBehaviour
         //return directionAsInt if a square, otherwise reduce by 2 and then return
         return doorsAmount > 4 ? directionAsInt - 2 : directionAsInt;
     }
+
+    //public bool IsColliding(float dist)
+    //{
+    //    bool collision;
+    //    RaycastHit2D[] hit = Physics2D
+    //        .RaycastAll(transform.position, Vector2.one, dist);
+    //    collision = hit.Length > 1;
+    //    return collision;
+    //}
 }

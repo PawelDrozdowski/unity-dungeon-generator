@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amountToGenerate: 32
+  density: 0
   roomPrefab1x1: {fileID: 8864491939727171634, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
   hexRoomPrefab1x1: {fileID: 0}
   roomPrefab2x2: {fileID: 8152484570815157310, guid: 616f8ba0a54293840af65446819277a5, type: 3}
   add2x2: 0
   hex: 0
-  findFurthest: 1
+  ultraSpeed: 0
   rooms: []
   generatingRooms: 0
+  generatingStructure: 1
   generatorRoom: {fileID: 0}
 --- !u!1001 &1082080956554398978
 PrefabInstance:
@@ -45,6 +47,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.8113208
       objectReference: {fileID: 0}
+    - target: {fileID: 2530237029971949618, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2990938968587451818, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -60,6 +66,10 @@ PrefabInstance:
     - target: {fileID: 3291678014671013612, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_Color.r
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3291678014671013612, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3304002314747484531, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_Enabled
@@ -116,6 +126,14 @@ PrefabInstance:
     - target: {fileID: 7782800183853012125, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_Name
       value: Room Generator Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7782800183853012125, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8918206660000811409, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9191700445571990906, guid: 268dcf47ba0b2bf438f2c2446ab997b4, type: 3}
       propertyPath: m_IsActive

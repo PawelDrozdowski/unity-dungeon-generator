@@ -214,6 +214,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: add2x2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: density
       value: 2
       objectReference: {fileID: 0}
@@ -223,11 +227,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: amountToGenerate
-      value: 32000
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3591506950059283251, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: pathfindingExample
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7135493385129073055, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: m_Name
       value: Room Generator Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7135493385129073055, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8041304259765271622, guid: 02574b5fdfed674448bd44e54637e154, type: 3}
       propertyPath: m_RootOrder
@@ -360,7 +372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8865614829769337740, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbdb445e2b894484eacfab6189d5d485, type: 3}

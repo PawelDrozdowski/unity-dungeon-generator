@@ -13,13 +13,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amountToGenerate: 12
+  density: 0
   roomPrefab1x1: {fileID: 0}
   hexRoomPrefab1x1: {fileID: 1434521514556953326, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
   roomPrefab2x2: {fileID: 0}
   add2x2: 0
   hex: 1
+  ultraSpeed: 0
   rooms: []
   generatingRooms: 0
+  generatingStructure: 1
   generatorRoom: {fileID: 7786708693045813027}
 --- !u!1001 &9216480278168702413
 PrefabInstance:
@@ -30,7 +33,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 355641761818060353, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
       propertyPath: m_Name
-      value: Hex Room Generator 1x1 Variant
+      value: Hex Room Generator 1x1 Variant Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 355641761818060353, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 608356207745680280, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
       propertyPath: m_RootOrder
@@ -88,6 +95,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4990853095970780208, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5471949311100488430, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
       propertyPath: m_Color.b
       value: 0.29411766
@@ -99,6 +110,10 @@ PrefabInstance:
     - target: {fileID: 5471949311100488430, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
       propertyPath: m_Color.r
       value: 0.8117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5471949311100488430, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e13b7c95b7d5b384ab0ac21621ff32f0, type: 3}
